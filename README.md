@@ -1,60 +1,145 @@
-# Nuxt Starter Template
+# Optimiseur de Rémunération SASU
 
-[![Nuxt UI](https://img.shields.io/badge/Made%20with-Nuxt%20UI-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com)
+Une application web pour optimiser la rémunération d'un dirigeant de SASU en trouvant la meilleure répartition entre salaire et dividendes afin de minimiser les prélèvements fiscaux et sociaux.
 
-Use this template to get started with [Nuxt UI](https://ui.nuxt.com) quickly.
+## 🎯 Fonctionnalités
 
-- [Live demo](https://starter-template.nuxt.dev/)
-- [Documentation](https://ui.nuxt.com/docs/getting-started/installation/nuxt)
+- **Optimisation automatique** : Calcule la répartition optimale entre salaire et dividendes pour une rémunération nette cible
+- **Contraintes personnalisables** : Définissez un salaire brut minimal pour vos droits sociaux (PUMA, trimestres retraite, indemnités journalières)
+- **Calculs fiscaux précis** :
+  - Charges sociales patronales et salariales
+  - Impôt sur les sociétés (taux réduit à 15% jusqu'à 42 500€)
+  - CSG sur les dividendes (17,2%)
+  - Impôt sur le revenu (PFU à 12,8% ou barème progressif)
+- **Visualisation interactive** : Graphique en cascade montrant la décomposition des coûts
+- **Simulation en temps réel** : Résultats mis à jour instantanément
 
-<a href="https://starter-template.nuxt.dev/" target="_blank">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://ui.nuxt.com/assets/templates/nuxt/starter-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://ui.nuxt.com/assets/templates/nuxt/starter-light.png">
-    <img alt="Nuxt Starter Template" src="https://ui.nuxt.com/assets/templates/nuxt/starter-light.png" width="830" height="466">
-  </picture>
-</a>
+## 🚀 Technologies
 
-> The starter template for Vue is on https://github.com/nuxt-ui-templates/starter-vue.
+- [Nuxt 4](https://nuxt.com/) - Framework Vue.js full-stack
+- [Nuxt UI](https://ui.nuxt.com/) - Bibliothèque de composants UI
+- [ECharts](https://echarts.apache.org/) - Visualisation de données
+- [TailwindCSS 4](https://tailwindcss.com/) - Framework CSS utility-first
+- [TypeScript](https://www.typescriptlang.org/) - Typage statique
+- [Vitest](https://vitest.dev/) - Framework de tests unitaires
 
-## Quick Start
+## 📦 Installation
 
-```bash [Terminal]
-npm create nuxt@latest -- -t github:nuxt-ui-templates/starter
-```
+### Prérequis
 
-## Deploy your own
+- Node.js 18+ 
+- pnpm 10.29.3+
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-name=starter&repository-url=https%3A%2F%2Fgithub.com%2Fnuxt-ui-templates%2Fstarter&demo-image=https%3A%2F%2Fui.nuxt.com%2Fassets%2Ftemplates%2Fnuxt%2Fstarter-dark.png&demo-url=https%3A%2F%2Fstarter-template.nuxt.dev%2F&demo-title=Nuxt%20Starter%20Template&demo-description=A%20minimal%20template%20to%20get%20started%20with%20Nuxt%20UI.)
-
-## Setup
-
-Make sure to install the dependencies:
+### Installation des dépendances
 
 ```bash
 pnpm install
 ```
 
-## Development Server
+## 💻 Utilisation
 
-Start the development server on `http://localhost:3000`:
+### Développement
+
+Lancez le serveur de développement sur `http://localhost:3000` :
 
 ```bash
 pnpm dev
 ```
 
-## Production
+### Production
 
-Build the application for production:
+Compilez l'application pour la production :
 
 ```bash
 pnpm build
 ```
 
-Locally preview production build:
+Prévisualisez la version de production :
 
 ```bash
 pnpm preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### Tests
+
+Exécutez les tests unitaires :
+
+```bash
+pnpm test
+```
+
+Exécutez les tests en mode watch :
+
+```bash
+pnpm test:watch
+```
+
+### Linting et Typage
+
+Vérifiez le code avec ESLint :
+
+```bash
+pnpm lint
+```
+
+Vérifiez les types TypeScript :
+
+```bash
+pnpm typecheck
+```
+
+## 🧮 Comment ça fonctionne ?
+
+### Principe de l'optimisation
+
+En SASU, deux modes de rémunération coexistent :
+
+1. **Salaire** : 
+   - Charges sociales totales : ~67% (patronales + salariales)
+   - Ouvre des droits sociaux (retraite, chômage, santé)
+   - Déductible du résultat imposable
+
+2. **Dividendes** :
+   - Impôt sur les sociétés : 15% jusqu'à 42 500€, puis 25%
+   - CSG : 17,2% (non déductible)
+   - Impôt sur le revenu : PFU à 12,8% ou barème progressif
+   - Pas de charges sociales
+   - Pas de droits sociaux
+
+### Algorithme d'optimisation
+
+L'application teste systématiquement différentes répartitions salaire/dividendes :
+
+1. Pour chaque niveau de salaire brut (à partir du minimum défini)
+2. Calcul du montant de dividendes nécessaire pour atteindre la rémunération nette cible (recherche dichotomique)
+3. Calcul du taux de prélèvement global
+4. Sélection de la configuration avec le taux de prélèvement le plus faible
+
+### Suggestions de salaire minimal
+
+- **12 560 €** : Adhésion gratuite à la PUMA (couverture santé)
+- **7 128 €** : Validation de 4 trimestres de retraite
+- **24 117 €** : Maximisation des indemnités journalières maladie
+
+## 📊 Calculs implémentés
+
+Les utilitaires de calcul se trouvent dans [`app/utils/`](app/utils/) :
+
+- [`salaire.ts`](app/utils/salaire.ts) : Calcul du salaire net et des charges sociales
+- [`impotSociete.ts`](app/utils/impotSociete.ts) : Calcul de l'IS avec taux réduit
+- [`csgDividendes.ts`](app/utils/csgDividendes.ts) : Calcul de la CSG sur dividendes
+- [`impotRevenu.ts`](app/utils/impotRevenu.ts) : Calcul de l'IR (PFU vs barème)
+- [`coutTotalRemuneration.ts`](app/utils/coutTotalRemuneration.ts) : Calcul global
+- [`optimiserRemuneration.ts`](app/utils/optimiserRemuneration.ts) : Algorithme d'optimisation
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou une pull request.
+
+## 📄 License
+
+[MIT License](LICENSE) - Copyright (c) 2025
+
+## ⚠️ Avertissement
+
+Cet outil est fourni à titre informatif et ne constitue pas un conseil fiscal ou juridique. Les calculs sont basés sur les règles fiscales françaises en vigueur mais peuvent nécessiter des ajustements selon votre situation personnelle. Consultez un expert-comptable pour vos décisions financières.
